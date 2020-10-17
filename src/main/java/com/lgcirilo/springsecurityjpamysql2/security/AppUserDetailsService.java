@@ -28,7 +28,8 @@ public class AppUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException(username + " not found");
         }
 
-        return new AppUserDetails(user.get());
+        AppUserDetails appUserDetails = new AppUserDetails(user.get());
+        return appUserDetails;
     }
 
     public User save(User user) {

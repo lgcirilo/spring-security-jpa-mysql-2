@@ -32,11 +32,12 @@ public class TestEndPoints {
 
     @PostMapping(path = "/newUser", consumes = "application/json")
     public User saveNewUser(@RequestBody User user) {
-        User newUser = user;
+        User newUser = user; // can this line be removed???
         return appUserDetailsService.save(newUser);
     }
 
-    // TODO - move logic to AppUserDetailsService
+    // TODO - move logic to AppUserDetailsService.
+    // for testing purposes only
     @GetMapping(path = "/base64decode")
     public String b64Decode(@RequestParam String encryptedPassword) {
         byte[] decoded = Base64.getDecoder().decode(encryptedPassword);
@@ -44,6 +45,7 @@ public class TestEndPoints {
     }
 
     // TODO - move logic to AppUserDetailsService
+    // for testing purposes only
     @GetMapping(path = "/passwordMatches/{email}/{password}")
     public Boolean matches(@PathVariable String email, @PathVariable String password) {
         Optional<User> user = userRepository.findByEmail(email);
