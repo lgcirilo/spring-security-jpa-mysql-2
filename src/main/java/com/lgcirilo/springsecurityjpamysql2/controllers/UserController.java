@@ -1,10 +1,8 @@
 package com.lgcirilo.springsecurityjpamysql2.controllers;
 
+import com.lgcirilo.springsecurityjpamysql2.model.Role;
 import com.lgcirilo.springsecurityjpamysql2.model.User;
-import com.lgcirilo.springsecurityjpamysql2.services.RoleService;
 import com.lgcirilo.springsecurityjpamysql2.services.UserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,15 +12,11 @@ import java.util.Optional;
 @RequestMapping(path = "/user", produces = "application/json")
 public class UserController {
 
-    Logger logger = LoggerFactory.getLogger(UserController.class);
+    private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
 
-    private UserService userService;
-    private RoleService roleService;
-    private PasswordEncoder passwordEncoder;
-
-    public UserController(UserService userService, RoleService roleService, PasswordEncoder passwordEncoder) {
+    public UserController(UserService userService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
-        this.roleService = roleService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -35,15 +29,6 @@ public class UserController {
     public User getUserById(@RequestParam long userId) {
         return userService.getUserById(userId);
     }
-//
-//     @GetMapping(path = "/{userId}")
-//    public User getUserById(@PathVariable long userId) {
-//        Optional<User> fetchedUser = userService.getUserById(userId);
-//        if (fetchedUser.isPresent()) {
-//            return fetchedUser.get();
-//        }
-//        return null;
-//    }
 
     @PostMapping(path = "/new", consumes = "application/json")
     public User saveNewUser(@RequestBody User user) {
@@ -60,15 +45,21 @@ public class UserController {
         User newUser = userService.getUserById(user.getId());
         if (newUser != null) {
             // TODO - move if statement body to a method in UserService
-            User patchedUser = newUser;
-            patchedUser.setActive(user.isActive());
+            newUser.setActive(user.isActive());
             if (user.getEmail() != null) {
-                patchedUser.setEmail(user.getEmail());
+                newUser.setEmail(user.getEmail());
             }
             if (user.getPassword() != null) {
-                patchedUser.setPassword(passwordEncoder.encode(user.getPassword()));
+                newUser.setPassword(passwordEncoder.encode(user.getPassword()));
             }
-            return userService.save(patchedUser); // TODO - use ResponseEntity
+            if (user.getRoles() != null) {
+                for (Role role : user.getRoles()) {
+                    if (!newUser.getRoles().contains(role)) {
+                        newUser.getRoles().add(role);
+                    }
+                }
+            }
+            return userService.save(newUser); // TODO - use ResponseEntity
         }
         return null; // TODO - use ResponseEntity
     }

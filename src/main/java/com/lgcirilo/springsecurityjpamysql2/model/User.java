@@ -1,12 +1,11 @@
 package com.lgcirilo.springsecurityjpamysql2.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sun.istack.NotNull;
 
 import javax.persistence.*;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 public class User {
@@ -20,11 +19,17 @@ public class User {
     private String email;
 
     @NotNull
+    /**
+     * @JsonProperty( value = "password", access = JsonProperty.Access.WRITE_ONLY)
+     *     causes the password field no to be sent to client while preserving the ability to
+     *     read from client
+     */
+    @JsonProperty( value = "password", access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     private boolean active;
 
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @JsonIgnoreProperties("users")
 //    @JoinTable(
 //            name = "user_role",

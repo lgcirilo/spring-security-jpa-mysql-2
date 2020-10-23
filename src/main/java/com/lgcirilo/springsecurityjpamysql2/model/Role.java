@@ -16,7 +16,7 @@ public class Role {
     private String role;
 
     @ManyToMany(mappedBy = "roles",
-            cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+            cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @JsonIgnoreProperties("roles")
     private Set<User> users;
 
