@@ -7,10 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 // TODO - continue from here
@@ -19,7 +16,7 @@ public class AppUserDetails implements UserDetails {
     private String username;
     private String password;
     private boolean active;
-    private Set<GrantedAuthority> authorities;
+    private List<GrantedAuthority> authorities;
 
     Logger logger = LoggerFactory.getLogger(AppUserDetails.class);
 
@@ -29,7 +26,7 @@ public class AppUserDetails implements UserDetails {
         this.active = user.isActive();
         // TODO - The code below grants a fixed authority. Change it to grant appropriate authorities.
         SimpleGrantedAuthority role = new SimpleGrantedAuthority("ROLE_USER");
-        this.authorities = new HashSet<>();
+        this.authorities = new ArrayList<>();
         authorities.add(role);
     }
 

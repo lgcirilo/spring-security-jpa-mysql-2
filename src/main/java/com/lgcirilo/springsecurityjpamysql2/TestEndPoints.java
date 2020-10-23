@@ -3,6 +3,7 @@ package com.lgcirilo.springsecurityjpamysql2;
 import com.lgcirilo.springsecurityjpamysql2.model.User;
 import com.lgcirilo.springsecurityjpamysql2.repositories.UserRepository;
 import com.lgcirilo.springsecurityjpamysql2.security.AppUserDetailsService;
+import com.lgcirilo.springsecurityjpamysql2.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -14,9 +15,6 @@ import java.util.Optional;
 @RequestMapping(path = "/", produces = "application/json")
 public class TestEndPoints {
 
-    @Autowired
-    private AppUserDetailsService appUserDetailsService;
-
     // TODO - remove after b64Decode method logic has been moved to AppUserDetailsService
     @Autowired
     private UserRepository userRepository;
@@ -24,17 +22,6 @@ public class TestEndPoints {
     // TODO - remove after b64Decode method logic has been moved to AppUserDetailsService
     @Autowired
     private PasswordEncoder passwordEncoder;
-
-    @GetMapping
-    public String root() {
-        return "root";
-    }
-
-    @PostMapping(path = "/newUser", consumes = "application/json")
-    public User saveNewUser(@RequestBody User user) {
-        User newUser = user; // can this line be removed???
-        return appUserDetailsService.save(newUser);
-    }
 
     // TODO - move logic to AppUserDetailsService.
     // for testing purposes only

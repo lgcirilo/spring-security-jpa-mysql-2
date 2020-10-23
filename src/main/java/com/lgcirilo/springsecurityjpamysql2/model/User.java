@@ -1,8 +1,11 @@
 package com.lgcirilo.springsecurityjpamysql2.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sun.istack.NotNull;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -13,6 +16,7 @@ public class User {
     private long id;
 
     @NotNull
+    @Column(unique = true)
     private String email;
 
     @NotNull
@@ -20,12 +24,27 @@ public class User {
 
     private boolean active;
 
-    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JsonIgnoreProperties("users")
 //    @JoinTable(
 //            name = "user_role",
 //            joinColumns = @JoinColumn(name = "user_id"),
 //            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles;
+    private List<Role> roles;
+
+    public User() { }
+
+    public User(String email, String password) {
+        this.email = email;
+        this.password = password;
+        this.active = true;
+    }
+
+    public User(String email, String password, boolean active) {
+        this.email = email;
+        this.password = password;
+        this.active = active;
+    }
 
     public Long getId() {
         return id;
@@ -59,11 +78,11 @@ public class User {
         this.active = active;
     }
 
-    public Set<Role> getRoles() {
+    public List<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<Role> roles) {
+    public void setRoles(List<Role> roles) {
         this.roles = roles;
     }
 }
